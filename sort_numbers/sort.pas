@@ -3,10 +3,13 @@ unit Unit1;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
+  intArr = Array of Integer;
+
   TForm1 = class(TForm)
     ListBox1: TListBox;
     Button1: TButton;
@@ -15,53 +18,54 @@ type
     Edit3: TEdit;
     Label1: TLabel;
     procedure Button1Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
   Form1: TForm1;
-  Panel: TPanel;
 
 implementation
 
 {$R *.dfm}
 
-
-
-procedure array_sort(var arr : Array of Integer; n : Integer; min : Integer = 0; max : Integer = 9999);
+// Our array sorter
+procedure array_sort(var numbers: intArr);
 var
-   count   : Array of Integer;
-   i, j, z : Integer;
+  count: intArr;
+  i, x, y, max: Integer;
 begin
-   SetLength(count, max-min);
-   for i := 0 to (max-min) do
-      count[i] := 0;
-   for i := 0 to (n-1) do
-      count[ arr[i] - min ] := count[ arr[i] - min ] + 1;
-   z := 0;
-   for i := min to max do
-      for j := 0 to (count[i - min] - 1) do begin
-	 arr[z] := i;
-	 z := z + 1
-      end
+  max := 999999;
+  SetLength(count, max);
+  for i := 0 to (max - 1) do
+    count[i] := 0;
+  for i := 0 to (Length(numbers) - 1) do
+    count[numbers[i]] := count[numbers[i]] + 1;
+  x := 0;
+  for i := 0 to (max - 1) do
+    for y := 0 to (count[i] - 1) do
+    begin
+      numbers[x] := i;
+      x := x + 1
+    end
 end;
 
+// Whenever you click the button
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  numbers	: Array[0 .. 2] of Integer;
-  i : Integer;
+  numbers: intArr;
+  number: Integer;
+  i: Integer;
+  C: TComponent;
 begin
+  ListBox1.Clear;
+  SetLength(numbers, 3);
+
   numbers[0] := StrToInt(Edit1.Text);
   numbers[1] := StrToInt(Edit2.Text);
   numbers[2] := StrToInt(Edit3.Text);
 
-  array_sort(numbers, 3);
-  ListBox1.Clear;
-  for i in numbers do
-    ListBox1.Items.Add(IntToStr(i));
+  array_sort(numbers);
+  for number in numbers do
+    ListBox1.Items.Add(IntToStr(number));
 end;
 
 end.
